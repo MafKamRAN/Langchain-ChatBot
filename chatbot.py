@@ -1,19 +1,21 @@
 import os
+from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.output_parsers import StrOutputParser
 
+load_dotenv()
+
 DEFAULT_MODEL = os.getenv("OLLAMA_MODEL", "minimax-m2.5:cloud")
-DEFAULT_TEMPERATURE = 0.7
-DEFAULT_MAX_TURNS = 5
-DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that provides concise and accurate answers."
+DEFAULT_TEMPERATURE = float(os.getenv("TEMPERATURE", "0.7"))
+DEFAULT_MAX_TURNS = int(os.getenv("MAX_TURNS", "5"))
+DEFAULT_SYSTEM_PROMPT = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant that provides concise and accurate answers.")
 
 
 def get_available_models():
     """Get list of available Ollama models."""
     try:
-        from langchain_ollama import ChatOllama
         import subprocess
         result = subprocess.run(
             ["ollama", "list"],
@@ -33,21 +35,21 @@ def get_available_models():
 
 def create_llm(model: str, temperature: float):
     """Create a new LLM instance with given parameters."""
-    return ChatOllama(model=model, temperature=temperature)
+    return ChatOllama(model=model, temperature=temperature)  # noqa: F821
 
 
 def create_prompt(system_prompt: str):
     """Create a new prompt template with given system prompt."""
-    return ChatPromptTemplate.from_messages([
+    return ChatPromptTemplate.from_messages([  # noqa: F821
         ("system", system_prompt),
-        MessagesPlaceholder(variable_name="chat_history"),
+        MessagesPlaceholder(variable_name="chat_history"),  # noqa: F821
         ("human", "{input}")
     ])
 
 
 def create_chain(llm, prompt):
     """Create a processing chain."""
-    return prompt | llm | StrOutputParser()
+    return prompt | llm | StrOutputParser()  # noqa: F821
 
 
 class ChatBot:
@@ -108,8 +110,8 @@ class ChatBot:
             "chat_history": self.chat_history
         })
 
-        self.chat_history.append(HumanMessage(content=question))
-        self.chat_history.append(AIMessage(content=response))
+        self.chat_history.append(HumanMessage(content=question))  # noqa: F821
+        self.chat_history.append(AIMessage(content=response))  # noqa: F821
 
         remaining = self.max_turns - (current_turns + 1)
         warning = ""
@@ -136,10 +138,6 @@ def chat(question, chat_history, max_turns=DEFAULT_MAX_TURNS):
             "Please type 'clear' for a new chat."
         ), chat_history
 
-    from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-    from langchain_ollama import ChatOllama
-    from langchain_core.output_parsers import StrOutputParser
-
     llm = ChatOllama(model=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
     prompt = ChatPromptTemplate.from_messages([
         ("system", DEFAULT_SYSTEM_PROMPT),
@@ -153,8 +151,8 @@ def chat(question, chat_history, max_turns=DEFAULT_MAX_TURNS):
         "chat_history": chat_history
     })
 
-    chat_history.append(HumanMessage(content=question))
-    chat_history.append(AIMessage(content=response))
+    chat_history.append(HumanMessage(content=question))  # noqa: F821
+    chat_history.append(AIMessage(content=response))  # noqa: F821
 
     remaining = max_turns - (current_turns + 1)
     warning = ""

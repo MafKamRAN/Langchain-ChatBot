@@ -782,6 +782,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "ipykernel" },
     { name = "langchain-ollama" },
+    { name = "python-dotenv" },
     { name = "streamlit" },
     { name = "tiktoken" },
 ]
@@ -791,6 +792,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.135.1" },
     { name = "ipykernel", specifier = ">=7.2.0" },
     { name = "langchain-ollama", specifier = ">=1.0.1" },
+    { name = "python-dotenv" },
     { name = "streamlit", specifier = ">=1.55.0" },
     { name = "tiktoken", specifier = ">=0.12.0" },
 ]

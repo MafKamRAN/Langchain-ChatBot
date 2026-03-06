@@ -1,4 +1,4 @@
-from chatbot import chat, create_chat_history, MAX_TURNS
+from chatbot import chat, create_chat_history
 
 chat_history = create_chat_history()
 
@@ -16,7 +16,7 @@ def main():
             break
 
         if user_input.lower() == "clear":
-            chat_history.clear()
+            chat_history.clear()  # noqa: F823
             print("History Cleared.")
             continue
 
