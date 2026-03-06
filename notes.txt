@@ -1,0 +1,151 @@
+# LangChain Chatbot - Project Notes
+
+## Overview
+LangChain chatbot application with dual interfaces (CLI + Streamlit web UI) using Ollama as the LLM provider. Uses a modular src/ directory structure for scalability.
+
+## Tech Stack
+- **LLM Provider**: Ollama (default), OpenAI (optional)
+- **Framework**: LangChain, FastAPI, Streamlit
+- **Python**: 3.11+
+
+## Project Structure
+```
+langchain-chatbot/
+├── app.py              # CLI entry point (simple text chat)
+├── streamlit_app.py    # Streamlit web interface
+├── chatbot.py          # Shared chat logic (legacy)
+├── pyproject.toml      # Project dependencies
+├── requirements.txt    # Pip requirements
+├── CLAUDE.md          # AI assistant instructions
+├── notes.txt          # This file
+├── src/               # Main application code (modular)
+│   ├── __init__.py
+│   ├── main.py        # FastAPI app entry point
+│   ├── api/           # API route handlers
+│   ├── config/        # Configuration & settings
+│   ├── core/          # Core utilities
+│   ├── models/        # Data models & schemas
+│   ├── providers/    # LLM providers (Ollama, OpenAI)
+│   └── services/      # Business logic
+└── .env               # Environment variables
+```
+
+## Folder & File Descriptions
+
+### Root Files
+
+#### app.py
+- **Purpose**: CLI (Command Line Interface) entry point
+- **Use**: Simple text-based chat in terminal
+- **Commands**: Type messages, `quit` to exit, `clear` to reset history
+
+#### streamlit_app.py
+- **Purpose**: Web-based chat interface
+- **Use**: Browser-based UI with sidebar settings
+- **Features**: Model selector, temperature slider, max turns, system prompt editor
+
+#### chatbot.py
+- **Purpose**: Shared chat logic module
+- **Use**: Contains ChatBot class used by both CLI and Streamlit
+- **Note**: Will be migrated to src/ in future
+
+---
+
+### src/ Directory
+
+#### src/main.py
+- **Purpose**: FastAPI application entry point
+- **Use**: REST API server for programmatic access
+- **Run**: `uvicorn src.main:app --reload`
+
+#### src/api/
+- **Purpose**: API route handlers and endpoints
+- **Contains**: HTTP endpoints for chat, settings, models, etc.
+- **Files**: `__init__.py` (routes defined here)
+
+#### src/config/
+- **Purpose**: Configuration and settings management
+- **Contains**: Environment variables, app settings, constants
+- **Files**: `settings.py` - loads .env, provides config to app
+- **Purpose**: Centralize all configuration in one place
+
+#### src/core/
+- **Purpose**: Core utilities and shared functionality
+- **Contains**: Logging setup, custom exceptions, constants
+- **Files**: `logging.py` - application logging configuration
+- **Purpose**: Utilities used across the entire application
+
+#### src/models/
+- **Purpose**: Data models, schemas, and type definitions
+- **Contains**: Pydantic models, data classes
+- **Files**: `__init__.py` - define request/response schemas
+- **Purpose**: Type safety and data validation
+
+#### src/providers/
+- **Purpose**: LLM provider integrations
+- **Contains**: Ollama, OpenAI, and other LLM adapters
+- **Files**:
+  - `ollama.py` - ChatOllama wrapper for LangChain
+  - `openai.py` - OpenAI GPT integration
+- **Purpose**: Abstract away LLM details, swap providers easily
+
+#### src/services/
+- **Purpose**: Business logic and orchestration
+- **Contains**: Chat service, model service, history service
+- **Files**: `__init__.py` - main service classes
+- **Purpose**: Separate logic from API routes
+
+---
+
+## Running the App
+
+### CLI Mode
+```bash
+python app.py
+```
+- Type messages and press Enter
+- `quit` to exit, `clear` to reset history
+
+### Streamlit Web UI
+```bash
+streamlit run streamlit_app.py
+```
+- Opens in browser at http://localhost:8501
+- Sidebar for settings
+
+### FastAPI Server
+```bash
+uvicorn src.main:app --reload
+```
+- API at http://localhost:8000
+- Docs at http://localhost:8000/docs
+
+## Features
+
+1. **Three Interfaces**: CLI, Streamlit web, FastAPI REST
+2. **Multiple LLM Providers**: Ollama (default), OpenAI
+3. **Configurable Settings**: Model, temperature, max turns, system prompt
+4. **Chat History**: In-memory with turn limit warnings
+
+## Dependencies
+- langchain-ollama >= 1.0.1
+- streamlit >= 1.55.0
+- fastapi
+- uvicorn
+- pydantic
+
+## Environment Variables (.env)
+```
+OLLAMA_MODEL=minimax-m2.5:cloud
+# Add OpenAI key if needed:
+# OPENAI_API_KEY=your-key-here
+```
+
+## Migration Notes
+
+The `chatbot.py` in root should be migrated to src/ structure:
+- `src/providers/ollama.py` - LLM wrapper
+- `src/services/chat.py` - ChatBot class
+- `src/config/settings.py` - Configuration
+
+This follows better separation of concerns.

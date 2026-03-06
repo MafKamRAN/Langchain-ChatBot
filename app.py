@@ -1,10 +1,28 @@
-from langchain_ollama import ChatOllama
+from chatbot import chat, create_chat_history, MAX_TURNS
 
-llm = ChatOllama(
-    model="llama3.1:8b",
-    temperature=0.7,
-)
+chat_history = create_chat_history()
 
-response = llm.invoke("What is RAG?")
-print(response.content)
 
+def main():
+    print("LangChain Chatbot Ready! (Type 'quit' to exit, 'clear' to reset history)")
+
+    while True:
+        user_input = input("You: ").strip()
+
+        if not user_input:
+            continue
+
+        if user_input.lower() == "quit":
+            break
+
+        if user_input.lower() == "clear":
+            chat_history.clear()
+            print("History Cleared.")
+            continue
+
+        response, chat_history = chat(user_input, chat_history)
+        print("AI:", response)
+
+
+if __name__ == "__main__":
+    main()
