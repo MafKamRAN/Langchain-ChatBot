@@ -16,11 +16,13 @@ def main():
             break
 
         if user_input.lower() == "clear":
-            chat_history.clear()  # noqa: F823
+            chat_history.clear()
             print("History Cleared.")
             continue
 
-        response, chat_history = chat(user_input, chat_history)
+        response, updated_history = chat(user_input, chat_history)
+        chat_history.clear()
+        chat_history.extend(updated_history)
         print("AI:", response)
 
 
